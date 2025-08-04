@@ -6,24 +6,38 @@ This repository contains a complete Ultima Online development setup with both cl
 
 - `ClassicUO/` - Open source UO client (submodule)
 - `ServUO/` - Open source UO server emulator (submodule)  
-- `UO_7_0_102_3/` - Shared game data files
+- `uo-data/` - Shared game data files
 
 ## Getting Started
 
 ### Prerequisites
-- .NET SDK
-- Visual Studio Code or Visual Studio
+- **.NET SDK** (version 7.0 or later)
+- **Mono** (for running ServUO on macOS/Linux)
+- **Visual Studio Code** (recommended) or Visual Studio
+- **make** (for using ServUO build scripts)
 
-### Setup
-1. Clone this repository with submodules:
+### macOS Setup
+1. Install Homebrew (if not already installed):
+   ```bash
+   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+   ```
+
+2. Install required dependencies:
+   ```bash
+   brew install dotnet mono make
+   ```
+
+3. Clone this repository with submodules:
    ```bash
    git clone --recursive <your-repo-url>
    ```
 
-2. Initialize submodules (if not cloned recursively):
+4. Initialize submodules (if not cloned recursively):
    ```bash
    git submodule update --init --recursive
    ```
+
+### Setup
 
 ### Building
 
@@ -43,8 +57,46 @@ _winrelease.bat
 **macOS/Linux:**
 ```bash
 cd ServUO
-./_makerelease
+make -f _makedebug build    # For development/debug build
+# OR
+make -f _makerelease build  # For production/release build
 ```
+
+## Running the Server
+
+### macOS Instructions
+
+1. **Build the server** (development mode):
+   ```bash
+   cd ServUO
+   make -f _makedebug build
+   ```
+
+2. **Configure the data path** (already configured to use `uo-data/`):
+   The server is pre-configured to look for UO game data files in the `uo-data/` directory.
+
+3. **Run the server**:
+   ```bash
+   mono ServUO.exe -debug
+   ```
+
+4. **Stop the server**:
+   - Use `Ctrl+C` in the terminal
+   - If that doesn't work, find the process and kill it:
+     ```bash
+     ps aux | grep mono
+     kill <process-id>
+     ```
+
+### Visual Studio Code
+
+You can also build and run from VS Code:
+
+1. **Open the ServUO folder** in VS Code
+2. **Build**: Use `Cmd+Shift+P` → "Tasks: Run Task" → "build debug"
+3. **Run**: The launch configuration is set up to run with Mono
+
+**Note**: ServUO targets .NET Framework 4.8, which requires Mono runtime on macOS/Linux.
 
 ## Configuration
 

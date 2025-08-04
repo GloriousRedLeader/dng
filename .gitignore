@@ -20,8 +20,8 @@ Thumbs.db
 *.log
 
 # Ultima Online client data - exclude all content but keep folder structure
-UO_7_0_102_3/*
-!UO_7_0_102_3/.gitkeep
+uo-data/*
+!uo-data/.gitkeep
 
 # Build outputs
 bin/
