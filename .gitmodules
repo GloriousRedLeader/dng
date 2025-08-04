@@ -1,6 +1,6 @@
 [submodule "ClassicUO"]
 	path = ClassicUO
-	url = https://github.com/ClassicUO/ClassicUO.git
+	url = https://github.com/GloriousRedLeader/ClassicUO.git
 [submodule "ServUO"]
 	path = ServUO
-	url = https://github.com/ServUO/ServUO.git
+	url = https://github.com/GloriousRedLeader/ServUO.git
