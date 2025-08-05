@@ -11,7 +11,8 @@ This repository contains a complete Ultima Online development setup with both cl
 ## Getting Started
 
 ### Prerequisites
-- **.NET SDK** (version 7.0 or later)
+- **.NET SDK 9.0 or later** (required for ClassicUO client)
+- **.NET SDK 7.0 or later** (minimum for ServUO server)
 - **Mono** (for running ServUO on macOS/Linux)
 - **Visual Studio Code** (recommended) or Visual Studio
 - **make** (for using ServUO build scripts)
@@ -42,10 +43,43 @@ This repository contains a complete Ultima Online development setup with both cl
 ### Building
 
 #### ClassicUO (Client)
+
+**Prerequisites:**
+- .NET SDK 9.0 or later (ClassicUO requires .NET 9.0)
+- Git submodules must be initialized
+
+**Install .NET SDK 9.0:**
+```bash
+# macOS (using Homebrew)
+brew install --cask dotnet-sdk
+
+# Verify installation
+dotnet --version  # Should show 9.0.x or later
+```
+
+**Initialize Submodules:**
+ClassicUO requires external dependencies (FNA framework, etc.) that are included as git submodules:
+
+```bash
+cd ClassicUO
+git submodule update --init --recursive
+```
+
+**Build the Client:**
 ```bash
 cd ClassicUO/scripts
 bash build-naot.sh
 ```
+
+The build process will:
+1. Build the Bootstrap project
+2. Build the main Client project with Native AOT compilation
+3. Copy platform-specific dependencies (macOS libraries for Metal/OpenGL)
+4. Generate optimized native binaries
+
+**Output:** Built client files will be in `ClassicUO/bin/dist/`
+
+**Build Time:** Expect 30-60 seconds for a full build (Native AOT compilation takes time)
 
 #### ServUO (Server)
 **Windows:**
@@ -97,6 +131,53 @@ You can also build and run from VS Code:
 3. **Run**: The launch configuration is set up to run with Mono
 
 **Note**: ServUO targets .NET Framework 4.8, which requires Mono runtime on macOS/Linux.
+
+## Running the Client
+
+### macOS Instructions
+
+1. **Build the client** (if not already done):
+   ```bash
+   cd ClassicUO/scripts
+   bash build-naot.sh
+   ```
+
+2. **Run the client**:
+   ```bash
+   cd ClassicUO
+   ./ClassicUO -UODataDir /Users/Arthur.Olliff/dng/uo-data/ -Server 127.0.0.1 -Port 2593
+   ```
+
+This will launch the client with your UO data directory and connect to the local server.
+
+**Note**: ClassicUO is a native client that supports multiple graphics APIs on macOS (Metal, OpenGL, MoltenVK).
+
+## Troubleshooting
+
+### ClassicUO Build Issues
+
+**"Microsoft.Xna" namespace errors:**
+- Make sure git submodules are initialized: `git submodule update --init --recursive`
+- The FNA framework (in `external/FNA`) provides the XNA compatibility layer
+
+**".NET SDK version" errors:**
+- ClassicUO requires .NET 9.0 or later
+- Check version: `dotnet --version`
+- Update if needed: `brew install --cask dotnet-sdk`
+
+**Missing dependencies:**
+- Ensure you're in the `ClassicUO/scripts` directory when building
+- Try cleaning and rebuilding: `dotnet clean` then `bash build-naot.sh`
+
+### ServUO Issues
+
+**"ServUO.exe not found":**
+- Make sure you built the server first: `make -f _makedebug build`
+- Check that Mono is installed: `mono --version`
+
+**Data path errors:**
+- Verify `ServUO/Config/DataPath.cfg` points to the correct `uo-data/` directory
+- Ensure UO data files exist in the `uo-data/` directory
 
 ## Configuration
 
